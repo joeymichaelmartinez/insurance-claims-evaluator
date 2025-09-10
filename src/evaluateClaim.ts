@@ -28,7 +28,7 @@ export default function evaluateClaim(claim: Claim, policies: Policy[]): Evaluat
   }
   const payout = claim.amountClaimed - policy.deductible;
 
-  if (payout < 0) {
+  if (payout <= 0) {
     return {
       approved: false,
       payout: 0,

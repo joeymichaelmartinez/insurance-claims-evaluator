@@ -17,4 +17,12 @@ export const examplePolicies: Policy[] = [
     coverageLimit: 50000,
     coveredIncidents: ['accident', 'theft', 'fire', 'water damage'],
   },
+  {
+    policyId: 'POL789',
+    startDate: new Date('2024-01-01'),
+    endDate: new Date('2026-01-01'),
+    deductible: 1000,
+    coverageLimit: 75000,
+    coveredIncidents: ['accident', 'fire', 'water damage'],
+  },
 ];
