@@ -18,8 +18,8 @@ This project evaluates insurance claims based on:
 
 ## How to Run
 
-git clone https://github.com/joeymichaelmartinez/insurance-claims-evaluator.git
-cd insurance-claims-evaluator
+- git clone https://github.com/joeymichaelmartinez/insurance-claims-evaluator.git
+- cd insurance-claims-evaluator
 
-npm install
-npm test
+- npm install
+- npm test
