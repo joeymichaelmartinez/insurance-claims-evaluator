@@ -1,45 +1,17 @@
 import evaluateClaim from '../src/evaluateClaim';
-
-type IncidentType = 'accident' | 'theft' | 'fire' | 'water damage';
-
-interface Policy {
-  policyId: string;
-  startDate: Date;
-  endDate: Date;
-  deductible: number;
-  coverageLimit: number;
-  coveredIncidents: IncidentType[];
-}
-
-const examplePolicies: Policy[] = [
-  {
-    policyId: 'POL123',
-    startDate: new Date('2023-01-01'),
-    endDate: new Date('2024-01-01'),
-    deductible: 500,
-    coverageLimit: 10000,
-    coveredIncidents: ['accident', 'fire'],
-  },
-  {
-    policyId: 'POL456',
-    startDate: new Date('2022-06-01'),
-    endDate: new Date('2025-06-01'),
-    deductible: 250,
-    coverageLimit: 50000,
-    coveredIncidents: ['accident', 'theft', 'fire', 'water damage'],
-  },
-];
+import { examplePolicies } from '../data/mockPolicies';
+import { Claim, EvaluationResult } from '../src/types';
 
 describe('evaluateClaim', () => {
   it('rejects claim if policy is not active on incident date', () => {
-    const claim = {
+    const claim: Claim = {
       policyId: 'POL123',
       incidentType: 'fire',
       incidentDate: new Date('2025-01-01'),
       amountClaimed: 3000,
     };
 
-    const result = evaluateClaim(claim, examplePolicies);
+    const result: EvaluationResult = evaluateClaim(claim, examplePolicies);
 
     expect(result).toEqual({
       approved: false,
@@ -49,14 +21,14 @@ describe('evaluateClaim', () => {
   });
 
   it('rejects claim if incident type is not covered', () => {
-    const claim = {
+    const claim: Claim = {
       policyId: 'POL123',
       incidentType: 'water damage',
       incidentDate: new Date('2023-06-15'),
       amountClaimed: 3000,
     };
 
-    const result = evaluateClaim(claim, examplePolicies);
+    const result: EvaluationResult = evaluateClaim(claim, examplePolicies);
 
     expect(result).toEqual({
       approved: false,
@@ -66,14 +38,14 @@ describe('evaluateClaim', () => {
   });
 
   it('coverage limit has been reached', () => {
-    const claim = {
+    const claim: Claim = {
       policyId: 'POL456',
       incidentType: 'fire',
       incidentDate: new Date('2023-06-15'),
       amountClaimed: 60000,
     };
 
-    const result = evaluateClaim(claim, examplePolicies);
+    const result: EvaluationResult = evaluateClaim(claim, examplePolicies);
 
     expect(result).toEqual({
       approved: false,
@@ -83,14 +55,14 @@ describe('evaluateClaim', () => {
   });
 
   it('returns zero payout if amountClaimed is less than deductible', () => {
-    const claim = {
+    const claim: Claim = {
       policyId: 'POL456',
       incidentType: 'fire',
       incidentDate: new Date('2023-06-15'),
       amountClaimed: 150,
     };
 
-    const result = evaluateClaim(claim, examplePolicies);
+    const result: EvaluationResult = evaluateClaim(claim, examplePolicies);
 
     expect(result).toEqual({
       approved: false,
@@ -100,14 +72,14 @@ describe('evaluateClaim', () => {
   });
 
   it('approves claim when policy is active and incident is covered', () => {
-    const claim = {
+    const claim: Claim = {
       policyId: 'POL123',
       incidentType: 'fire',
       incidentDate: new Date('2023-06-15'),
       amountClaimed: 3000,
     };
 
-    const result = evaluateClaim(claim, examplePolicies);
+    const result: EvaluationResult = evaluateClaim(claim, examplePolicies);
 
     expect(result).toEqual({
       approved: true,

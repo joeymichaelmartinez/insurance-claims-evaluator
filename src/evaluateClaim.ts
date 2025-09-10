@@ -1,4 +1,6 @@
-export default function evaluateClaim(claim: any, policies: any[]): any {
+import { EvaluationResult, Claim, Policy } from './types';
+
+export default function evaluateClaim(claim: Claim, policies: Policy[]): EvaluationResult  {
   const policy = policies.find((policy) => policy.policyId === claim.policyId);
 
   if (!policy) {
