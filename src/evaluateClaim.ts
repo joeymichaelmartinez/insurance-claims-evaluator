@@ -13,4 +13,11 @@ export default function evaluateClaim(claim: any, policies: any[]): any {
     };
   }
   
+  if (!policy.coveredIncidents.includes(claim.incidentType)) {
+    return {
+      approved: false,
+      payout: 0,
+      reasonCode: 'NOT_COVERED',
+    };
+  }
 }

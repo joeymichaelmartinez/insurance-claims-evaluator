@@ -47,4 +47,21 @@ describe('evaluateClaim', () => {
       reasonCode: 'POLICY_INACTIVE',
     });
   });
+
+  it('rejects claim if incident type is not covered', () => {
+    const claim = {
+      policyId: 'POL123',
+      incidentType: 'water damage',
+      incidentDate: new Date('2023-06-15'),
+      amountClaimed: 3000,
+    };
+
+    const result = evaluateClaim(claim, examplePolicies);
+
+    expect(result).toEqual({
+      approved: false,
+      payout: 0,
+      reasonCode: 'NOT_COVERED',
+    });
+  });
 });
