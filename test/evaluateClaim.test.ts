@@ -64,4 +64,55 @@ describe('evaluateClaim', () => {
       reasonCode: 'NOT_COVERED',
     });
   });
+
+  it('coverage limit has been reached', () => {
+    const claim = {
+      policyId: 'POL456',
+      incidentType: 'fire',
+      incidentDate: new Date('2023-06-15'),
+      amountClaimed: 60000,
+    };
+
+    const result = evaluateClaim(claim, examplePolicies);
+
+    expect(result).toEqual({
+      approved: false,
+      payout: 0,
+      reasonCode: 'COVERAGE_LIMIT_REACHED',
+    });
+  });
+
+  it('returns zero payout if amountClaimed is less than deductible', () => {
+    const claim = {
+      policyId: 'POL456',
+      incidentType: 'fire',
+      incidentDate: new Date('2023-06-15'),
+      amountClaimed: 150,
+    };
+
+    const result = evaluateClaim(claim, examplePolicies);
+
+    expect(result).toEqual({
+      approved: false,
+      payout: 0,
+      reasonCode: 'ZERO_PAYOUT',
+    });
+  });
+
+  it('approves claim when policy is active and incident is covered', () => {
+    const claim = {
+      policyId: 'POL123',
+      incidentType: 'fire',
+      incidentDate: new Date('2023-06-15'),
+      amountClaimed: 3000,
+    };
+
+    const result = evaluateClaim(claim, examplePolicies);
+
+    expect(result).toEqual({
+      approved: true,
+      payout: 2500, // 3000 - 500
+      reasonCode: 'APPROVED',
+    });
+  });
 });
