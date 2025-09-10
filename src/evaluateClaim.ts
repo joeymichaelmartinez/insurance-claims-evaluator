@@ -1,17 +1,21 @@
-import { EvaluationResult, Claim, Policy } from './types';
+import { EvaluationResult, Claim, Policy, ReasonCode } from './types';
 
 export default function evaluateClaim(claim: Claim, policies: Policy[]): EvaluationResult  {
   const policy = policies.find((policy) => policy.policyId === claim.policyId);
 
   if (!policy) {
-    throw new Error('Policy not found');
+    return {
+      approved: false,
+      payout: 0,
+      reasonCode: ReasonCode.POLICY_NOT_FOUND,
+    };
   }
 
   if (claim.incidentDate < policy.startDate || claim.incidentDate > policy.endDate) {
     return {
       approved: false,
       payout: 0,
-      reasonCode: 'POLICY_INACTIVE',
+      reasonCode: ReasonCode.POLICY_INACTIVE,
     };
   }
   
@@ -19,7 +23,7 @@ export default function evaluateClaim(claim: Claim, policies: Policy[]): Evaluat
     return {
       approved: false,
       payout: 0,
-      reasonCode: 'NOT_COVERED',
+      reasonCode: ReasonCode.NOT_COVERED,
     };
   }
   const payout = claim.amountClaimed - policy.deductible;
@@ -28,7 +32,7 @@ export default function evaluateClaim(claim: Claim, policies: Policy[]): Evaluat
     return {
       approved: false,
       payout: 0,
-      reasonCode: 'ZERO_PAYOUT',
+      reasonCode: ReasonCode.ZERO_PAYOUT,
     };
   }
 
@@ -36,13 +40,13 @@ export default function evaluateClaim(claim: Claim, policies: Policy[]): Evaluat
     return {
       approved: false,
       payout: 0,
-      reasonCode: 'COVERAGE_LIMIT_REACHED',
+      reasonCode: ReasonCode.COVERAGE_LIMIT_REACHED,
     };
   }
 
   return {
     approved: true,
     payout,
-    reasonCode: 'APPROVED',
+    reasonCode: ReasonCode.APPROVED,
   };
 }

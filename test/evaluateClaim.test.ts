@@ -1,6 +1,6 @@
 import evaluateClaim from '../src/evaluateClaim';
 import { examplePolicies } from '../data/mockPolicies';
-import { Claim, EvaluationResult } from '../src/types';
+import { Claim, EvaluationResult, ReasonCode } from '../src/types';
 
 describe('evaluateClaim', () => {
   it('rejects claim if policy is not active on incident date', () => {
@@ -16,7 +16,7 @@ describe('evaluateClaim', () => {
     expect(result).toEqual({
       approved: false,
       payout: 0,
-      reasonCode: 'POLICY_INACTIVE',
+      reasonCode: ReasonCode.POLICY_INACTIVE,
     });
   });
 
@@ -33,7 +33,7 @@ describe('evaluateClaim', () => {
     expect(result).toEqual({
       approved: false,
       payout: 0,
-      reasonCode: 'NOT_COVERED',
+      reasonCode: ReasonCode.NOT_COVERED,
     });
   });
 
@@ -50,7 +50,7 @@ describe('evaluateClaim', () => {
     expect(result).toEqual({
       approved: false,
       payout: 0,
-      reasonCode: 'COVERAGE_LIMIT_REACHED',
+      reasonCode: ReasonCode.COVERAGE_LIMIT_REACHED,
     });
   });
 
@@ -67,7 +67,7 @@ describe('evaluateClaim', () => {
     expect(result).toEqual({
       approved: false,
       payout: 0,
-      reasonCode: 'ZERO_PAYOUT',
+      reasonCode: ReasonCode.ZERO_PAYOUT,
     });
   });
 
@@ -84,7 +84,24 @@ describe('evaluateClaim', () => {
     expect(result).toEqual({
       approved: true,
       payout: 2500, // 3000 - 500
-      reasonCode: 'APPROVED',
+      reasonCode: ReasonCode.APPROVED,
+    });
+  });
+
+  it('rejects claim if policy is not found', () => {
+    const claim: Claim = {
+      policyId: 'POL999',
+      incidentType: 'fire',
+      incidentDate: new Date('2023-06-15'),
+      amountClaimed: 3000,
+    };
+
+    const result: EvaluationResult = evaluateClaim(claim, examplePolicies);
+
+    expect(result).toEqual({
+      approved: false,
+      payout: 0,
+      reasonCode: ReasonCode.POLICY_NOT_FOUND,
     });
   });
 });
