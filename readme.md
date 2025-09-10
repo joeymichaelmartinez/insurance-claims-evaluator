@@ -16,3 +16,10 @@ This project evaluates insurance claims based on:
 - TypeScript
 - Jest (for testing)
 
+## How to Run
+
+git clone https://github.com/joeymichaelmartinez/insurance-claims-evaluator.git
+cd insurance-claims-evaluator
+
+npm install
+npm test
